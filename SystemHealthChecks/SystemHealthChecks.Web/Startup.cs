@@ -42,7 +42,6 @@ namespace SystemHealthChecks.Web
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<CategoryQueries>();
             services.AddSingleton<DatabaseHealthCheckCommands>();
             services.AddSingleton<DatabaseHealthCheckQueries>();
             services.AddSingleton<UrlApiHealthCheckCommands>();

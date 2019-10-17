@@ -21,7 +21,7 @@ namespace SystemHealthChecks.Infrastructure
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var sqlCon = "Server=(localdb)\\mssqllocaldb;Database=SystemHealthChecks;Trusted_Connection=True;MultipleActiveResultSets=true";
+                var sqlCon = "{YOUR-CONNECTION-STRING}";
                 optionsBuilder.UseSqlServer(sqlCon);
             }
 
