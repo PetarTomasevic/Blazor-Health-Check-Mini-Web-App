@@ -43,6 +43,6 @@ If you find something valuable here, i'll be glad.
 
 If not, i don't care because i'm doing this for fun :)
 
-**Geek Warning:** Interfaces and "best practices" are avoided intentionally. 
+**Geek Warning:** 
 [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)
 
