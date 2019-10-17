@@ -22,7 +22,7 @@ add connection string to your db (i must fix this)
 
 run migrations to create db.
 
-Add at least one entry for health check point or app will break on start (have to fix that :) )
+Add at least one entry for health check point or app will break on start (have to fix that too :) )
 
 Setup in startup endpoint title:
 
