@@ -1,0 +1,217 @@
+﻿@page "/databasesettings"
+@inject SystemHealthChecks.Domain.Services.DatabaseHealthChecks.DatabaseHealthCheckQueries  dbQueries
+@inject SystemHealthChecks.Domain.Services.DatabaseHealthChecks.DatabaseHealthCheckCommands dbCommands
+@using SystemHealthChecks.Infrastructure.Entities
+
+<h3>Database List</h3>
+<AuthorizeView>
+    <Authorized>
+        <div class="card">
+            <div style="text-align: end;padding: 5px;">
+                <button class="btn btn-primary" @onclick="@AddDB">Add Database</button>
+            </div>
+            <div style="float:right; width:80%;padding:5px;">
+                <div class="col-sm-6" style="float:left">
+                    <input class="form-control" type="text" placeholder="Search" @bind=searchString />
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-default btn-info" @onclick="@(e=>FilterDB())">Filter</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+
+            @if (filterDbList == null)
+            {
+
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <ul class="list-group">
+                    @foreach (var db in filterDbList)
+                    {
+                        <li class="list-group-item">
+                            <div>
+                                @db.DatabaseName
+                            </div>
+                            <div>
+                                @db.DatabaseTestQuery
+                            </div>
+                            <div>
+                                <button class="btn btn-default" style="float:right;display:block;" @onclick="@(e=>EditDatabase(@db.Id))">Edit</button>
+                                <button class="btn btn-danger" style="float:right;display:block;" @onclick="@(e=>DeleteConfirm(@db.Id))">Delete</button>
+                            </div>
+
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+        @if (isAdd)
+        {
+            <div class="modal" tabindex="-1" style="display:block" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">@modalTitle</h3>
+                            <button type="button" class="close" @onclick="@closeModal">
+                                <span aria-hidden="true">X</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="Name" class="control-label">Database Name</label>
+                                    <input for="Name" class="form-control" @bind="database.DatabaseName" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="Name" class="control-label">Database Connection String</label>
+                                    <input for="Name" class="form-control" @bind="database.DatabaseConnectionString" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="Name" class="control-label">Database Test Query</label>
+                                    <input for="Name" class="form-control" @bind="database.DatabaseTestQuery" />
+                                </div>
+
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-block btn-info" @onclick="@(e=>SaveDatabase(database))" data-dismiss="modal">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (isDelete)
+        {
+            <div class="modal" tabindex="-1" style="display:block" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Delete Database</h3>
+                        </div>
+                        <div class="modal-body">
+                            <h4>Do you want to delete this Database ??</h4>
+                            <table class="table">
+                                <tr>
+                                    <td>Database Name</td>
+                                    <td>
+                                        <input type="hidden" @bind="@database.Id" />
+                                        @database.DatabaseName
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>Connection String</td>
+                                    <td>@database.DatabaseConnectionString</td>
+                                </tr>
+                                <tr>
+                                    <td>Test Query</td>
+                                    <td>@database.DatabaseTestQuery</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" @onclick="@(e=>DeleteCategory(database.Id))" data-dismiss="modal">YES</button>
+                            <button class="btn btn-warning" @onclick="@closeModal">NO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </Authorized>
+    <NotAuthorized>
+        <h1>Authentication Failure!</h1>
+        <p>You're not signed in.</p>
+    </NotAuthorized>
+</AuthorizeView>
+@functions {
+    private List<DatabaseHealthCheck> dbList;
+    private List<DatabaseHealthCheck> filterDbList;
+    private DatabaseHealthCheck database;
+    protected Boolean isDelete = false;
+    protected Boolean isAdd = false;
+    protected DatabaseHealthCheck db = new DatabaseHealthCheck();
+    protected string modalTitle { get; set; } = "";
+    public string searchString { get; set; } = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await getDatabases();
+
+    }
+
+    protected async Task getDatabases()
+    {
+        dbList = await dbQueries.GetListDatabaseHealthChecks();
+        filterDbList = dbList;
+    }
+    protected async Task EditDatabase(int catId)
+    {
+        database = await dbQueries.GetDatabaseHealthCheck(catId);
+        this.modalTitle = "Edit Database";
+        this.isAdd = true;
+    }
+
+    protected async Task DeleteCategory(int dbId)
+    {
+        await Task.Run(() =>
+        {
+            dbCommands.DeleteDatabaseHealthCheck(dbId);
+        });
+        await getDatabases();
+        this.isDelete = false;
+
+    }
+    protected async Task DeleteConfirm(int dbId)
+    {
+        database = await dbQueries.GetDatabaseHealthCheck(dbId);
+        this.isDelete = true;
+    }
+
+    protected void closeModal()
+    {
+        this.isAdd = false;
+        this.isDelete = false;
+    }
+    protected async Task FilterDB()
+    {
+        filterDbList = dbList.Where(x => x.DatabaseName.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) != -1).ToList();
+    }
+
+
+
+    protected async Task SaveDatabase(DatabaseHealthCheck db)
+    {
+
+        if (db.Id != 0)
+        {
+            await Task.Run(() =>
+            {
+                dbCommands.UpdateHealthCheckCategory(db);
+            });
+        }
+        else
+        {
+            await Task.Run(() =>
+            {
+                dbCommands.DBHealthCheck(db);
+            });
+        }
+        this.isAdd = false;
+        await getDatabases();
+    }
+
+    protected void AddDB()
+    {
+        database = new DatabaseHealthCheck();
+        this.modalTitle = "Add Database";
+        this.isAdd = true;
+    }
+}
