@@ -4,7 +4,7 @@
 **#youdontneedjavascript**
 
 Blazor and core 3.0 playground with health checks.
-Application is fully functional. I just implement what i need at the moment. (And use opportunity to start learning Blazor)
+Application is fully functional. I just implement what i need at the moment. (And abused opportunity to start learning Blazor)
 
 Thanks [Xabaril](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks) for UI and great library for health checks
 Thanks [Microsoft](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor) for Blazor :D
