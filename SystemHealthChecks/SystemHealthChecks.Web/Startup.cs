@@ -10,7 +10,6 @@ using SystemHealthChecks.Web.Areas.Identity;
 using SystemHealthChecks.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
-using SystemHealthChecks.Domain.Services.Categories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SystemHealthChecks.Domain.Services.HealthChecks;
