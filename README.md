@@ -38,7 +38,10 @@ If you want to add webhook for slack to receive notifications setup settings her
                         );
 
 **Notice:** This App is a learning project, and small showcase of handling Health Checks and having App UI done in Blazor with zero lines of java script.
-If you find something valuable here, i'll be glad.  If not, i don't care because i'm doing this for fun :)
+
+If you find something valuable here, i'll be glad.  
+
+If not, i don't care because i'm doing this for fun :)
 
 **Geek Warning:** Interfaces and "best practices" are avoided intentionally. 
 [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)
